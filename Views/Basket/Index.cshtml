@@ -1,0 +1,116 @@
+﻿@model List<BasketItemDetailVM>
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>Shopping Cart</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- End Page title area -->
+
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-content-right">
+                    <div class="woocommerce">
+                        <form method="post" action="#">
+                            <table cellspacing="0" class="shop_table cart">
+                                <thead>
+                                    <tr>
+                                        <th class="product-remove">&nbsp;</th>
+                                        <th class="product-thumbnail">&nbsp;</th>
+                                        <th class="product-name">Product</th>
+                                        <th class="product-name">Company</th>
+                                        <th class="product-name">Category</th>
+                                        <th class="product-price">Price</th>
+                                        <th class="product-quantity">Quantity</th>
+                                        <th class="product-subtotal">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   @foreach (BasketItemDetailVM? product in Model)
+                                    {
+                                        <tr class="cart_item">
+                                            <td class="product-remove">
+                                                <a title="Remove this item" class="remove" asp-controller="Basket" asp-action="DeleteBasketItem" asp-route-id="@product?.Id">×</a>
+                                            </td>
+
+                                            <td class="product-thumbnail">
+                                                <a asp-controller="Products" asp-action="Detail" asp-route-id="@product?.Id"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="~/assets/img/@product?.ImagePath"></a>
+                                            </td>
+
+                                            <td class="product-name">
+                                                <a asp-controller="Products" asp-action="Detail" asp-route-id="@product?.Id">@product?.Name</a>
+                                            </td>
+                                            <td>@product?.CompanyName</td>
+                                            <td>@product?.CategoryName</td>
+                                            <td class="product-price">
+                                                <span class="amount">£@product?.Price</span>
+                                            </td>
+
+                                            <td class="product-quantity">
+                                                <div class="quantity buttons_added">
+                                                    <a asp-controller="Basket" asp-action="DecrementBasketItem" asp-route-id="@product?.Id" class="btn btn-primary" value="-">-</a>
+                                                    <input type="number" size="4" class="input-text qty text" title="Qty" value="@product?.Count" min="0" step="1">
+                                                    <a  asp-controller="Basket" asp-action="IncrementBasketItem" asp-route-id="@product?.Id" class="btn btn-primary" >+</a>
+                                                </div>
+                                            </td>
+
+                                            <td class="product-subtotal">
+                                                <span class="amount">£@(product?.Price*product?.Count)</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td class="actions" colspan="6">
+                                           
+                                            <a  asp-controller="Basket" asp-action="OrderedBasket" value="Ordered" name="proceed" class="btn btn-primary">Order</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+
+                        <div class="">                         
+                            <div class="cart_totals  " style="width:100% !important">
+                                <h2>Cart Totals</h2>
+
+                                <table cellspacing="0">
+                                    <tbody>
+                                        <tr class="cart-subtotal">
+                                            <th>Cart Subtotal</th>
+                                            <td><span class="amount">£@Model.Sum(p=>p.Price*p.Count)</span></td>
+                                        </tr>
+
+                                        <tr class="shipping">
+                                            <th>Shipping and Handling</th>
+                                            <td>Free Shipping</td>
+                                        </tr>
+
+                                        <tr class="order-total">
+                                            <th>Order Total</th>
+                                            <td><strong><span class="amount">£@Model.Sum(p=>p.Price*p.Count)</span></strong> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                @await Component.InvokeAsync("LatestProducts")
+            </div>
+        </div>
+    </div>
+</div>
